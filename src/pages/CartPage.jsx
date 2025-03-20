@@ -1,20 +1,16 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import { Modal } from "bootstrap";
 import ReactLoading from 'react-loading';
 
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 const API_PATH = import.meta.env.VITE_API_PATH;
 
-
-function App() {
-  //const [products, setProducts] = useState([]);
-  const [tempProduct, setTempProduct] = useState([]);
+export default function CartPage() {
   const [cart, setCart] = useState({});
-  //const [isScreenLoading, setIsScreenLoading] = useState(false);//(全螢幕)預設關閉
-  //const [isLoading, setIsLoading] = useState(false);//(部分)預設關閉
+  const [isScreenLoading, setIsScreenLoading] = useState(false);//(全螢幕)預設關閉
+  
   
   //取得購物車列表
   const getCart = async()=>{
@@ -29,66 +25,9 @@ function App() {
   }
 
   //取得產品列表
-  // useEffect(() => {
-  //   const getProducts = async () => {
-  //     //在發送get請求前，開啟Loading
-  //     setIsScreenLoading(true);
-  //     try {
-  //       const res = await axios.get(`${BASE_URL}/v2/api/${API_PATH}/products`);
-  //       setProducts(res.data.products);
-  //     } catch (error) {
-  //       alert("取得產品失敗");
-  //     }
-  //     finally{
-  //       //無論成功或失敗，都要關閉Loading
-  //       setIsScreenLoading(false);
-  //     }
-  //   };
-  //   getProducts();
-  //   getCart();
-  // }, []);
-
-  const productModalRef = useRef(null);
   useEffect(() => {
-    new Modal(productModalRef.current, { backdrop: false });
+    getCart();
   }, []);
-
-  const openModal = () => {
-    const modalInstance = Modal.getInstance(productModalRef.current);
-    modalInstance.show();
-  };
-
-  const closeModal = () => {
-    const modalInstance = Modal.getInstance(productModalRef.current);
-    modalInstance.hide();
-  };
-
-  const handleSeeMore = (product) => {
-    setTempProduct(product);
-    openModal();
-  };
-
-  const [qtySelect, setQtySelect] = useState(1);
-  
-  //加入購物車：數量要轉型別
-  // const addCartItem = async(product_id,qty)=>{
-  //   setIsLoading(true);//跑Loading
-  //   try {
-  //     await axios.post(`${BASE_URL}/v2/api/${API_PATH}/cart`,{
-  //       data:{
-  //         product_id,
-  //         qty:Number(qty)
-  //       }
-  //     })
-  //    getCart();//每次加入購物車後重新取得列表
-  //   } catch (error) {
-  //   alert("加入購物車失敗")
-  //   }
-  //   finally{
-  //     //最後關閉Loading
-  //     setIsLoading(false);
-  //   }
-  // }
 
   //清空購物車(全部)
   const removeCart = async()=>{
@@ -140,8 +79,8 @@ function App() {
     }
   }
 
-  //結帳表單：1.errors預設為空物件，若有error發生，物件會有資料，2.reset是清空表單資料
-  const{
+   //結帳表單：1.errors預設為空物件，若有error發生，物件會有資料，2.reset是清空表單資料
+   const{
     register,
     handleSubmit,
     formState:{errors},
@@ -149,7 +88,7 @@ function App() {
   } = useForm()
 
   const onSubmit = handleSubmit((data)=>{
-    console.log(data)
+    
     //使用解構的方式將送出後回傳的資料改成六角API格式
     const{message,...user} = data;
       
@@ -185,80 +124,12 @@ function App() {
     }
   }
 
-  return (
-    <div className="container">
-      <div className="mt-4">
-       
 
-        <div
-          ref={productModalRef}
-          style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
-          className="modal fade"
-          id="productModal"
-          tabIndex="-1"
-        >
-          <div className="modal-dialog modal-dialog-centered">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h2 className="modal-title fs-5">
-                  產品名稱：{tempProduct.title}
-                </h2>
-                <button
-                  onClick={closeModal}
-                  type="button"
-                  className="btn-close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                ></button>
-              </div>
-              <div className="modal-body">
-                <img
-                  src={tempProduct.imageUrl}
-                  alt={tempProduct.title}
-                  className="img-fluid"
-                />
-                <p>內容：{tempProduct.content}</p>
-                <p>描述：{tempProduct.description}</p>
-                <p>
-                  價錢：{tempProduct.price}{" "}
-                  <del>{tempProduct.origin_price}</del> 元
-                </p>
-                <div className="input-group align-items-center">
-                  <label htmlFor="qtySelect">數量：</label>
-                  <select
-                    value={qtySelect}
-                    onChange={(e) => setQtySelect(e.target.value)}
-                    id="qtySelect"
-                    className="form-select"
-                  >
-                    {Array.from({ length: 10 }).map((_, index) => (
-                      <option key={index} value={index + 1}>
-                        {index + 1}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-              <div className="modal-footer">
-                {/*1.透過點擊tempProductModal把tempProduc把加進去，所以取其id
-                2.當isLoadin為true時，加入購物車的按鈕為disabled，api回傳後才能再點擊，避免api尚未回傳就重複點擊 */}
-                <button disabled = {isLoading} onClick={()=> addCartItem (tempProduct.id,qtySelect)} type="button" className="btn btn-primary d-flex align-items-center gap-2">
-                <div>加入購物車</div>
-                  {isLoading &&(
-                    <ReactLoading
-                    type={"spin"}
-                    color={"#000"}
-                    height={"1.5rem"}
-                    width={"1.5rem"}
-                  />
-                  )}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-       
-        {/* 若購物車長度大於0，則顯示以下資料*/}
+  return(
+    //加上container使X軸消失
+    <div className="container">
+      {/* 若購物車長度大於0，則顯示以下資料*/}
+      <div>
         {cart.carts?.length > 0 && (
           <div>
             <div className="text-end py-3">
@@ -292,7 +163,7 @@ function App() {
                       <div className="btn-group me-2" role="group">
                         <button
                         onClick={()=>updateCartItem(cartItem.id,cartItem.product.id,cartItem.qty-1)}
-                       //若數量為1，則disabled，才不會出現按下減鈕時數量為0
+                        //若數量為1，則disabled，才不會出現按下減鈕時數量為0
                         disabled={cartItem.qty === 1}
                           type="button"
                           className="btn btn-outline-dark btn-sm"
@@ -332,7 +203,7 @@ function App() {
           </div>
         )}
       </div>
-
+      
       {/* 結帳表單 */}
       <div className="my-5 row justify-content-center">
         <form onSubmit={onSubmit} className="col-md-6">
@@ -435,7 +306,7 @@ function App() {
           </div>
         </form>
       </div>
-
+    
       {/* Loading ：當isScreenLoading 開的時候才顯示*/}
       {isScreenLoading &&(
         <div
@@ -450,9 +321,6 @@ function App() {
         <ReactLoading type="spin" color="black" width="4rem" height="4rem" />
       </div>
       )}
-      
     </div>
-  );
+  )
 }
-
-export default App;

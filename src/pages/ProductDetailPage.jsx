@@ -13,6 +13,7 @@ export default function ProductDetailPage() {
   const [product, setProduct] = useState({});
   const [qtySelect,setQtySelect] = useState(1);
   const [isLoading, setIsLoading] = useState(false);//(部分)預設關閉
+  const [isScreenLoading, setIsScreenLoading] = useState(false);//(全螢幕)預設關閉
 
   //將產品id解構出來，對應到路由設置是'products/:id'，已將product_id命名為id，所以要寫成{id : product_id}
   const {id : product_id} = useParams()
@@ -21,7 +22,7 @@ export default function ProductDetailPage() {
     useEffect(() => {
       const getProduct = async () => {
         //在發送get請求前，開啟Loading
-        //setIsScreenLoading(true);
+        setIsScreenLoading(true);
         try {
           const res = await axios.get(`${BASE_URL}/v2/api/${API_PATH}/product/${product_id}`);
           setProduct(res.data.product);
@@ -30,7 +31,7 @@ export default function ProductDetailPage() {
         }
         finally{
           //無論成功或失敗，都要關閉Loading
-          //setIsScreenLoading(false);
+          setIsScreenLoading(false);
         }
       };
       getProduct();
@@ -58,6 +59,7 @@ export default function ProductDetailPage() {
     }
 
   return (
+    <>
     <div className="container mt-5">
       <div className="row">
         <div className="col-6">
@@ -99,6 +101,22 @@ export default function ProductDetailPage() {
         </div>
       </div>
     </div>
+     {/* Loading ：當isScreenLoading 開的時候才顯示*/}
+          {isScreenLoading &&(
+            <div
+            className="d-flex justify-content-center align-items-center"
+            style={{
+              position: "fixed",
+              inset: 0,
+              backgroundColor: "rgba(255,255,255,0.3)",
+              zIndex: 999,
+            }}
+          >
+            <ReactLoading type="spin" color="black" width="4rem" height="4rem" />
+          </div>
+          )}
+    </>
+    
 
   )
 }

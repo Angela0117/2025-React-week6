@@ -3,8 +3,9 @@ import FrontLayout from '../layouts/FrontLayout';
 import HomePages from '../pages/HomePages';
 import ProductsPage from '../pages/ProductsPage';
 import ProductDetailPage from '../pages/ProductDetailPage';
+import CartPage from '../pages/CartPage';
 
-
+//path命名依據為FrontLayout中的routes
 const router = createHashRouter([
   {
     path: '/',
@@ -21,6 +22,10 @@ const router = createHashRouter([
       {
         path: 'products/:id',
         element: <ProductDetailPage />,
+      },
+      {
+        path: 'cart',
+        element: <CartPage />,
       }
     ]
 
@@ -28,3 +33,4 @@ const router = createHashRouter([
 ])
 
 export default router;
+

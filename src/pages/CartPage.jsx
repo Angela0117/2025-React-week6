@@ -258,11 +258,11 @@ export default function CartPage() {
             {...register("tel", {
               required : "電話欄位必填",
               pattern:{
-                value:/^(0[2-8]\d{7}|09\d{8})$/,
-                message:"電話格式錯誤"}
+              value:/^(0[2-8]\d{7}|09\d{8})$/,
+              message:"電話格式錯誤"}
             })}
               id="tel"
-              type="text"
+              type="tel"
               className={`form-control ${errors.tel ? "is-invalid" : ""}`}
               placeholder="請輸入電話"
             />

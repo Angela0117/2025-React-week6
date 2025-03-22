@@ -10,12 +10,9 @@ const API_PATH = import.meta.env.VITE_API_PATH;
 
 
 function App() {
-  //const [products, setProducts] = useState([]);
   const [tempProduct, setTempProduct] = useState([]);
   const [cart, setCart] = useState({});
-  //const [isScreenLoading, setIsScreenLoading] = useState(false);//(全螢幕)預設關閉
-  //const [isLoading, setIsLoading] = useState(false);//(部分)預設關閉
-  
+
   //取得購物車列表
   const getCart = async()=>{
     try {
@@ -27,26 +24,6 @@ function App() {
       alert("取得購物車列表失敗")
     }
   }
-
-  //取得產品列表
-  // useEffect(() => {
-  //   const getProducts = async () => {
-  //     //在發送get請求前，開啟Loading
-  //     setIsScreenLoading(true);
-  //     try {
-  //       const res = await axios.get(`${BASE_URL}/v2/api/${API_PATH}/products`);
-  //       setProducts(res.data.products);
-  //     } catch (error) {
-  //       alert("取得產品失敗");
-  //     }
-  //     finally{
-  //       //無論成功或失敗，都要關閉Loading
-  //       setIsScreenLoading(false);
-  //     }
-  //   };
-  //   getProducts();
-  //   getCart();
-  // }, []);
 
   const productModalRef = useRef(null);
   useEffect(() => {
@@ -70,25 +47,6 @@ function App() {
 
   const [qtySelect, setQtySelect] = useState(1);
   
-  //加入購物車：數量要轉型別
-  // const addCartItem = async(product_id,qty)=>{
-  //   setIsLoading(true);//跑Loading
-  //   try {
-  //     await axios.post(`${BASE_URL}/v2/api/${API_PATH}/cart`,{
-  //       data:{
-  //         product_id,
-  //         qty:Number(qty)
-  //       }
-  //     })
-  //    getCart();//每次加入購物車後重新取得列表
-  //   } catch (error) {
-  //   alert("加入購物車失敗")
-  //   }
-  //   finally{
-  //     //最後關閉Loading
-  //     setIsLoading(false);
-  //   }
-  // }
 
   //清空購物車(全部)
   const removeCart = async()=>{
@@ -188,8 +146,6 @@ function App() {
   return (
     <div className="container">
       <div className="mt-4">
-       
-
         <div
           ref={productModalRef}
           style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
